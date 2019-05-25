@@ -80,7 +80,7 @@ def is_swap(player_score, opponent_score):
     """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
-    def last_two_digit_abs_value (score):
+    def last_two_digit_abs_value(score):
         last_one = score % 10
         next_one = score // 10 % 10
         return abs(last_one - next_one)
@@ -127,11 +127,14 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     "*** YOUR CODE HERE ***"
     while score0 < goal and score1 < goal:
         if player == 0:
-            score0 = score0 + take_turn(strategy0(score0, score1), score1, dice)
+            score0 = score0 + \
+                take_turn(strategy0(score0, score1), score1, dice)
         else:
-            score1 = score1 + take_turn(strategy1(score1, score0), score0, dice)
+            score1 = score1 + \
+                take_turn(strategy1(score1, score0), score0, dice)
         if is_swap(score0, score1):
             score0, score1 = score1, score0
+        say = say(score0, score1)
         player = other(player)
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
@@ -150,6 +153,7 @@ def say_scores(score0, score1):
     """A commentary function that announces the score for each player."""
     print("Player 0 now has", score0, "and Player 1 now has", score1)
     return say_scores
+
 
 def announce_lead_changes(previous_leader=None):
     """Return a commentary function that announces lead changes.
@@ -175,6 +179,7 @@ def announce_lead_changes(previous_leader=None):
             print('Player', leader, 'takes the lead by', abs(score0 - score1))
         return announce_lead_changes(leader)
     return say
+
 
 def both(f, g):
     """Return a commentary function that says what f says, then what g says.
@@ -217,6 +222,17 @@ def announce_highest(who, previous_high=0, previous_score=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    def commentary(player_0_score, plater_1_score):
+        last_high_point = previous_high
+        current_score = player_0_score if who == 0 else plater_1_score
+        current_point = current_score - previous_score
+        if current_point > last_high_point:
+            last_high_point = current_point
+            last_high_score = current_score
+            print(last_high_point,
+                  'point(s)! That\'s the biggest gain yet for Player', who)
+        return announce_highest(who, last_high_point, current_score)
+    return commentary
     # END PROBLEM 7
 
 
@@ -256,6 +272,14 @@ def make_averaged(fn, num_samples=1000):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    def calc_averaged(*args):
+        total = 0
+        k = 0
+        while k < num_samples:
+            total += fn(*args)
+            k += 1
+        return total / num_samples
+    return calc_averaged
     # END PROBLEM 8
 
 
@@ -270,6 +294,17 @@ def max_scoring_num_rolls(dice=six_sided, num_samples=1000):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    k = 1
+    smallest_num = k
+    match_result = 0
+    get_averaged = make_averaged(roll_dice, num_samples)
+    while k <= 10:
+        current_result = get_averaged(k, dice)
+        if current_result > match_result:
+            smallest_num = k
+            match_result = current_result
+        k += 1
+    return smallest_num
     # END PROBLEM 9
 
 
@@ -318,7 +353,11 @@ def bacon_strategy(score, opponent_score, margin=8, num_rolls=4):
     rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 10
-    return 4  # Replace this statement
+    if free_bacon(opponent_score) >= margin:
+        return 0
+    else:
+        return num_rolls
+    # return 4  # Replace this statement
     # END PROBLEM 10
 
 
@@ -328,7 +367,17 @@ def swap_strategy(score, opponent_score, margin=8, num_rolls=4):
     non-beneficial swap. Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 4  # Replace this statement
+    if is_swap(free_bacon(opponent_score) + score, opponent_score):
+        if opponent_score - free_bacon(opponent_score) - score >= margin:
+            return 0
+        else:
+            return num_rolls
+    else:
+        if free_bacon(opponent_score) >= margin:
+            return 0
+        else:
+            return num_rolls
+    # return 4  # Replace this statement
     # END PROBLEM 11
 
 
@@ -338,7 +387,11 @@ def final_strategy(score, opponent_score):
     *** YOUR DESCRIPTION HERE ***
     """
     # BEGIN PROBLEM 12
-    return 4  # Replace this statement
+    if opponent_score - score > 20:
+        return bacon_strategy(score, opponent_score)
+    else:
+        return swap_strategy(score, opponent_score)
+    # return 4  # Replace this statement
     # END PROBLEM 12
 
 
