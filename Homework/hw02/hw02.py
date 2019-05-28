@@ -213,7 +213,17 @@ def church_to_int(n):
     3
     """
     "*** YOUR CODE HERE ***"
-    # TBD
+    # record how many time f was called
+    total = 0
+    def trace(fn):
+        def wrapped(x):
+            # print('-> ', fn, '(', x, ')')
+            nonlocal total
+            total += 1
+            return fn(x)
+        return wrapped
+    n(trace(lambda x: x))(1)
+    return total
 
 def add_church(m, n):
     """Return the Church numeral for m + n, for Church numerals m and n.
