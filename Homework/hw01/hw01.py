@@ -158,4 +158,5 @@ def hailstone(n):
 # Q6
 quine = """
 "*** YOUR CODE HERE ***"
+a = 'print("a=",repr(a), ";", a);' ; print("a=",repr(a),";", a);
 """
