@@ -1,20 +1,27 @@
+from operator import sub, mul
+from math import sqrt
 HW_SOURCE_FILE = 'hw04.py'
 
 ###############
 #  Questions  #
 ###############
 
+
 def intersection(st, ave):
     """Represent an intersection using the Cantor pairing function."""
     return (st+ave)*(st+ave+1)//2 + ave
 
+
 def street(inter):
     return w(inter) - avenue(inter)
+
 
 def avenue(inter):
     return inter - (w(inter) ** 2 + w(inter)) // 2
 
-w = lambda z: int(((8*z+1)**0.5-1)/2)
+
+def w(z): return int(((8*z+1)**0.5-1)/2)
+
 
 def taxicab(a, b):
     """Return the taxicab distance between two intersections.
@@ -27,6 +34,10 @@ def taxicab(a, b):
     9
     """
     "*** YOUR CODE HERE ***"
+    street_a, avenue_a = street(a), avenue(a)
+    street_b, avenue_b = street(b), avenue(b)
+    return abs(street_a - street_b) + abs(avenue_a - avenue_b)
+
 
 def squares(s):
     """Returns a new list containing square roots of the elements of the
@@ -40,6 +51,13 @@ def squares(s):
     []
     """
     "*** YOUR CODE HERE ***"
+    match_list = []
+    for num in s:
+        sqrt_num = sqrt(num)
+        if sqrt_num == round(sqrt_num):
+            match_list.append(int(sqrt_num))
+    return match_list
+
 
 def g(n):
     """Return the value of G(n), computed recursively.
@@ -59,6 +77,11 @@ def g(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n <= 3:
+        return n
+    else:
+        return g(n - 1) + 2 * g(n - 2) + 3 * g(n - 3)
+
 
 def g_iter(n):
     """Return the value of G(n), computed iteratively.
@@ -78,6 +101,17 @@ def g_iter(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    total, k = 0, 1
+    prev_k_1, prev_k_2, prev_k_3 = 3, 2, 1
+    while k <= n:
+        if k <= 3:
+            total = k
+        else:
+            total = prev_k_1 + 2 * prev_k_2 + 3 * prev_k_3
+            prev_k_1, prev_k_2, prev_k_3 = total, prev_k_1, prev_k_2
+        k += 1
+    return total
+
 
 def count_change(amount):
     """Return the number of ways to make change for amount.
@@ -95,10 +129,44 @@ def count_change(amount):
     True
     """
     "*** YOUR CODE HERE ***"
+    def max_power_2(n):
+        """Return max power 2 value of n
+          >>> max_power_2(1)
+          1
+          >>> max_power_2(4)
+          4
+          >>> max_power_2(5)
+          4
+          >>> max_power_2(10)
+          8
+        """
+        # total = 1
+        # while total * 2 <= n:
+        #     total *= 2
+        # return total
+        if n == 1:
+            return 1
+        if n / 2 == n // 2:
+            return 2 * max_power_2(n / 2)
+        else:
+            return 2 * max_power_2((n - 1) / 2)
+
+    def recursive_change(n, k):
+        if n < 0:
+            return 0
+        elif n <= 1:
+            return 1
+        if k == 1:
+            return 1
+        return recursive_change(n, max_power_2(k // 2)) + recursive_change(n - k, k)
+
+    return recursive_change(amount, max_power_2(amount))
+
 
 def print_move(origin, destination):
     """Print instructions to move a disk."""
     print("Move the top disk from rod", origin, "to rod", destination)
+
 
 def move_stack(n, start, end):
     """Print the moves required to move n disks on the start pole to the end
@@ -134,7 +202,6 @@ def move_stack(n, start, end):
 # Extra Questions #
 ###################
 
-from operator import sub, mul
 
 def make_anonymous_factorial():
     """Return the value of an expression that computes factorial.
