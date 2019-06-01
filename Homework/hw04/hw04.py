@@ -168,6 +168,19 @@ def print_move(origin, destination):
     print("Move the top disk from rod", origin, "to rod", destination)
 
 
+def other_side(a, b):
+    """Return other side within 1 2 3
+    >>> other_side(1, 2)
+    3
+    >>> ohter_side(1, 3)
+    2
+    >>> other_side(2, 3)
+    1
+    """
+    assert 1 <= a <= 3 and 1 <= b <= 3 and a != b
+    return 6 - a - b
+
+
 def move_stack(n, start, end):
     """Print the moves required to move n disks on the start pole to the end
     pole without violating the rules of Towers of Hanoi.
@@ -197,6 +210,16 @@ def move_stack(n, start, end):
     """
     assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
     "*** YOUR CODE HERE ***"
+
+    def move_three_times(n, start, end):
+        move_stack(n, start, other_side(start, end))
+        move_stack(1, start, end)
+        move_stack(n, other_side(start, end), end)
+
+    if n == 1:
+        print_move(start, end)
+    else:
+        return move_three_times(n - 1, start, end)
 
 ###################
 # Extra Questions #
