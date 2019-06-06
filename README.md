@@ -5,3 +5,4 @@
 ### Unfinished Item
 
 - [ ] hw02 Q5: Church numerals
+- [ ] hw04 Q6: Anonymous factorial
