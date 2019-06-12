@@ -2,6 +2,7 @@
 
 from math import sqrt
 from random import sample
+from functools import reduce
 
 # Rename the built-in zip (http://docs.python.org/3/library/functions.html#zip)
 _zip = zip
@@ -91,4 +92,6 @@ def mean(s):
     """
     # BEGIN Question 1
     "*** YOUR CODE HERE ***"
+    assert len(s) > 0
+    return reduce(lambda prev, curr: prev + curr, s) / len(s)
     # END Question 1
