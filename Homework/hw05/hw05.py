@@ -2,19 +2,23 @@
 # Trees #
 #########
 
+
 def tree(label, branches=[]):
     """Construct a tree with the given label value and a list of branches."""
     for branch in branches:
         assert is_tree(branch), 'branches must be trees'
     return [label] + list(branches)
 
+
 def label(tree):
     """Return the label value of a tree."""
     return tree[0]
 
+
 def branches(tree):
     """Return the list of branches of the given tree."""
     return tree[1:]
+
 
 def is_tree(tree):
     """Returns True if the given tree is a tree, and False otherwise."""
@@ -25,11 +29,13 @@ def is_tree(tree):
             return False
     return True
 
+
 def is_leaf(tree):
     """Returns True if the given tree's list of branches is empty, and False
     otherwise.
     """
     return not branches(tree)
+
 
 def print_tree(t, indent=0):
     """Print a representation of this tree in which each node is
@@ -54,6 +60,7 @@ def print_tree(t, indent=0):
     for b in branches(t):
         print_tree(b, indent + 1)
 
+
 def copy_tree(t):
     """Returns a copy of t. Only for testing purposes.
 
@@ -68,6 +75,7 @@ def copy_tree(t):
 ######################
 # Required questions #
 ######################
+
 
 def replace_leaf(t, old, new):
     """Returns a new tree where every leaf value equal to old has
@@ -99,8 +107,15 @@ def replace_leaf(t, old, new):
     True
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        if label(t) == old:
+            return tree(new)
+        else:
+            return tree(label(t))
+    return tree(label(t), [replace_leaf(b, old, new) for b in branches(t)])
 
 # Mobiles
+
 
 def mobile(left, right):
     """Construct a mobile from a left side and a right side."""
@@ -108,52 +123,65 @@ def mobile(left, right):
     assert is_side(right), "right must be a side"
     return ['mobile', left, right]
 
+
 def is_mobile(m):
     """Return whether m is a mobile."""
     return type(m) == list and len(m) == 3 and m[0] == 'mobile'
+
 
 def left(m):
     """Select the left side of a mobile."""
     assert is_mobile(m), "must call left on a mobile"
     return m[1]
 
+
 def right(m):
     """Select the right side of a mobile."""
     assert is_mobile(m), "must call right on a mobile"
     return m[2]
+
 
 def side(length, mobile_or_weight):
     """Construct a side: a length of rod with a mobile or weight at the end."""
     assert is_mobile(mobile_or_weight) or is_weight(mobile_or_weight)
     return ['side', length, mobile_or_weight]
 
+
 def is_side(s):
     """Return whether s is a side."""
     return type(s) == list and len(s) == 3 and s[0] == 'side'
+
 
 def length(s):
     """Select the length of a side."""
     assert is_side(s), "must call length on a side"
     return s[1]
 
+
 def end(s):
     """Select the mobile or weight hanging at the end of a side."""
     assert is_side(s), "must call end on a side"
     return s[2]
 
+
 def weight(size):
     """Construct a weight of some size."""
     assert size > 0
     "*** YOUR CODE HERE ***"
+    return ['weight', size]
+
 
 def size(w):
     """Select the size of a weight."""
     assert is_weight(w), 'must call size on a weight'
     "*** YOUR CODE HERE ***"
+    return w[1]
+
 
 def is_weight(w):
     """Whether w is a weight."""
     return type(w) == list and len(w) == 2 and w[0] == 'weight'
+
 
 def examples():
     t = mobile(side(1, weight(2)),
@@ -163,6 +191,7 @@ def examples():
                               side(3, weight(2)))))
     v = mobile(side(4, t), side(2, u))
     return (t, u, v)
+
 
 def total_weight(m):
     """Return the total weight of m, a weight or mobile.
@@ -181,6 +210,7 @@ def total_weight(m):
         assert is_mobile(m), "must get total weight of a mobile or a weight"
         return total_weight(end(left(m))) + total_weight(end(right(m)))
 
+
 def balanced(m):
     """Return whether m is balanced.
 
@@ -198,6 +228,19 @@ def balanced(m):
     False
     """
     "*** YOUR CODE HERE ***"
+    def total_torque(side):
+        assert is_side(side)
+        return length(side) * total_weight(end(side))
+
+    def is_end_balanced(side):
+        assert is_side(side)
+        if is_mobile(end(side)):
+            return balanced(end(side))
+        else:
+            return True
+
+    return total_torque(left(m)) == total_torque(right(m)) and is_end_balanced(left(m)) and is_end_balanced(right(m))
+
 
 def totals_tree(m):
     """Return a tree representing the mobile with its total weight at the root.
@@ -225,8 +268,21 @@ def totals_tree(m):
           2
     """
     "*** YOUR CODE HERE ***"
+    left_end = end(left(m))
+    right_end = end(right(m))
+
+    if is_mobile(left_end):
+        left_totals_tree = totals_tree(left_end)
+    else:
+        left_totals_tree = tree(size(left_end))
+    if is_mobile(right_end):
+        right_totals_tree = totals_tree(right_end)
+    else:
+        right_totals_tree = tree(size(right_end))
+    return tree(label(left_totals_tree) + label(right_totals_tree), [left_totals_tree, right_totals_tree])
 
 # Mutable functions in Python
+
 
 def make_counter():
     """Return a counter function.
@@ -250,6 +306,7 @@ def make_counter():
     """
     "*** YOUR CODE HERE ***"
 
+
 def make_fib():
     """Returns a function that returns the next Fibonacci number
     every time it is called.
@@ -270,6 +327,7 @@ def make_fib():
     12
     """
     "*** YOUR CODE HERE ***"
+
 
 def make_withdraw(balance, password):
     """Return a password-protected withdraw function.
@@ -300,6 +358,7 @@ def make_withdraw(balance, password):
     True
     """
     "*** YOUR CODE HERE ***"
+
 
 def make_joint(withdraw, old_password, new_password):
     """Return a password-protected withdraw function that has joint access to
@@ -343,6 +402,7 @@ def make_joint(withdraw, old_password, new_password):
 
 # Generators
 
+
 def generate_paths(t, x):
     """Yields all possible paths from the root of t to a node with the label x
     as a list.
@@ -383,9 +443,11 @@ def generate_paths(t, x):
 # Extra Questions #
 ###################
 
+
 def str_interval(x):
     """Return a string representation of interval x."""
     return '{0} to {1}'.format(lower_bound(x), upper_bound(x))
+
 
 def add_interval(x, y):
     """Return an interval that contains the sum of any value in interval x and
@@ -394,17 +456,21 @@ def add_interval(x, y):
     upper = upper_bound(x) + upper_bound(y)
     return interval(lower, upper)
 
+
 def interval(a, b):
     """Construct an interval from a to b."""
     return [a, b]
+
 
 def lower_bound(x):
     """Return the lower bound of interval x."""
     "*** YOUR CODE HERE ***"
 
+
 def upper_bound(x):
     """Return the upper bound of interval x."""
     "*** YOUR CODE HERE ***"
+
 
 def mul_interval(x, y):
     """Return the interval that contains the product of any value in x and any
@@ -415,10 +481,12 @@ def mul_interval(x, y):
     p4 = x[1] * y[1]
     return [min(p1, p2, p3, p4), max(p1, p2, p3, p4)]
 
+
 def sub_interval(x, y):
     """Return the interval that contains the difference between any value in x
     and any value in y."""
     "*** YOUR CODE HERE ***"
+
 
 def div_interval(x, y):
     """Return the interval that contains the quotient of any value in x divided by
@@ -428,14 +496,17 @@ def div_interval(x, y):
     reciprocal_y = interval(1/upper_bound(y), 1/lower_bound(y))
     return mul_interval(x, reciprocal_y)
 
+
 def par1(r1, r2):
     return div_interval(mul_interval(r1, r2), add_interval(r1, r2))
+
 
 def par2(r1, r2):
     one = interval(1, 1)
     rep_r1 = div_interval(one, r1)
     rep_r2 = div_interval(one, r2)
     return div_interval(one, add_interval(rep_r1, rep_r2))
+
 
 def check_par():
     """Return two intervals that give different results for parallel resistors.
@@ -446,12 +517,14 @@ def check_par():
     >>> lower_bound(x) != lower_bound(y) or upper_bound(x) != upper_bound(y)
     True
     """
-    r1 = interval(1, 1) # Replace this line!
-    r2 = interval(1, 1) # Replace this line!
+    r1 = interval(1, 1)  # Replace this line!
+    r2 = interval(1, 1)  # Replace this line!
     return r1, r2
+
 
 def multiple_references_explanation():
     return """The multiple reference problem..."""
+
 
 def quadratic(x, a, b, c):
     """Return the interval that is the range of the quadratic defined by
