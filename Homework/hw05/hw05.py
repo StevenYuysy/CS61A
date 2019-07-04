@@ -305,6 +305,14 @@ def make_counter():
     5
     """
     "*** YOUR CODE HERE ***"
+    dict_items = {}
+
+    def counter(key):
+        raw_value = dict_items.get(key) or 0
+        value = raw_value + 1
+        dict_items[key] = value
+        return value
+    return counter
 
 
 def make_fib():
@@ -327,6 +335,22 @@ def make_fib():
     12
     """
     "*** YOUR CODE HERE ***"
+    index = 0
+    last_fib = 0
+    last_last_fib = 0
+
+    def fib():
+        nonlocal index
+        nonlocal last_fib
+        nonlocal last_last_fib
+        result = last_fib + last_last_fib
+        if index == 1:
+            result = 1
+        index += 1
+        last_last_fib = last_fib
+        last_fib = result
+        return result
+    return fib
 
 
 def make_withdraw(balance, password):
@@ -358,6 +382,29 @@ def make_withdraw(balance, password):
     True
     """
     "*** YOUR CODE HERE ***"
+    stored_password = password
+    wrong_password_list = []
+    is_lock = False
+
+    def withdraw(amount, password):
+        nonlocal balance
+        nonlocal is_lock
+        lock_str = 'Your account is locked. Attempts: ' + \
+            str(wrong_password_list)
+        if is_lock:
+            return lock_str
+        if password is not stored_password:
+            wrong_password_list.append(password)
+            if len(wrong_password_list) == 3:
+                is_lock = True
+            return 'Incorrect password'
+        else:
+            if amount > balance:
+                return 'Insufficient funds'
+            else:
+                balance = balance - amount
+                return balance
+    return withdraw
 
 
 def make_joint(withdraw, old_password, new_password):
@@ -399,6 +446,19 @@ def make_joint(withdraw, old_password, new_password):
     "Your account is locked. Attempts: ['my', 'secret', 'password']"
     """
     "*** YOUR CODE HERE ***"
+
+    def call_and_check_withdraw(password):
+        result = withdraw(0, password)
+        return (type(result) is not str, result)
+
+    def joint(amount, password):
+        password = old_password if password is new_password else password
+        return withdraw(amount, password)
+
+    is_available, alert_str = call_and_check_withdraw(old_password)
+
+    return joint if is_available else alert_str
+
 
 # Generators
 
