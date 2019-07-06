@@ -498,6 +498,18 @@ def generate_paths(t, x):
     [[0, 2], [0, 2, 1, 2]]
     """
     "*** YOUR CODE HERE ***"
+    # travel_list = []
+
+    def travel(tree, prev_path=[]):
+        for b in branches(tree):
+            path = prev_path + [label(b)]
+            if label(b) == x:
+                # travel_list.append(path)
+                yield path
+            yield from travel(b, path)
+    yield from travel(t, [label(t)])
+    # print(travel_list)
+    # yield from travel_list
 
 ###################
 # Extra Questions #
