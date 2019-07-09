@@ -3,6 +3,9 @@
 #########
 
 
+from operator import sub, mul, abs
+
+
 def tree(label, branches=[]):
     """Construct a tree with the given label value and a list of branches."""
     for branch in branches:
@@ -537,27 +540,34 @@ def interval(a, b):
 def lower_bound(x):
     """Return the lower bound of interval x."""
     "*** YOUR CODE HERE ***"
+    return min(x)
 
 
 def upper_bound(x):
     """Return the upper bound of interval x."""
     "*** YOUR CODE HERE ***"
+    return max(x)
+
+
+def operate_interval(x, y, operator):
+    p1 = operator(lower_bound(x), lower_bound(y))
+    p2 = operator(lower_bound(x), upper_bound(y))
+    p3 = operator(upper_bound(x), lower_bound(y))
+    p4 = operator(upper_bound(x), upper_bound(y))
+    return interval(min(p1, p2, p3, p4), max(p1, p2, p3, p4))
 
 
 def mul_interval(x, y):
     """Return the interval that contains the product of any value in x and any
     value in y."""
-    p1 = x[0] * y[0]
-    p2 = x[0] * y[1]
-    p3 = x[1] * y[0]
-    p4 = x[1] * y[1]
-    return [min(p1, p2, p3, p4), max(p1, p2, p3, p4)]
+    return operate_interval(x, y, mul)
 
 
 def sub_interval(x, y):
     """Return the interval that contains the difference between any value in x
     and any value in y."""
     "*** YOUR CODE HERE ***"
+    return operate_interval(x, y, sub)
 
 
 def div_interval(x, y):
@@ -565,6 +575,7 @@ def div_interval(x, y):
     any value in y. Division is implemented as the multiplication of x by the
     reciprocal of y."""
     "*** YOUR CODE HERE ***"
+    assert abs(upper_bound(y)) is not 1 and abs(lower_bound(y)) is not 1
     reciprocal_y = interval(1/upper_bound(y), 1/lower_bound(y))
     return mul_interval(x, reciprocal_y)
 
@@ -589,8 +600,8 @@ def check_par():
     >>> lower_bound(x) != lower_bound(y) or upper_bound(x) != upper_bound(y)
     True
     """
-    r1 = interval(1, 1)  # Replace this line!
-    r2 = interval(1, 1)  # Replace this line!
+    r1 = interval(3, 2)  # Replace this line!
+    r2 = interval(3, 3)  # Replace this line!
     return r1, r2
 
 
@@ -608,3 +619,13 @@ def quadratic(x, a, b, c):
     '0 to 10'
     """
     "*** YOUR CODE HERE ***"
+    def quadratic_calculate(t):
+        return a * t * t + b * t + c
+    y1 = quadratic_calculate(lower_bound(x))
+    y2 = quadratic_calculate(upper_bound(x))
+    extream_x = -b / (2 * a)
+    y_interval = interval(y1, y2)
+    if extream_x >= lower_bound(x) and extream_x <= upper_bound(x):
+        y3 = quadratic_calculate(extream_x)
+        y_interval = interval(min(y1, y2, y3), max(y1, y2, y3))
+    return y_interval
