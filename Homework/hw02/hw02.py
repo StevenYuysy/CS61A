@@ -1,22 +1,27 @@
 """ Homework 2: Higher Order Functions"""
 
+from operator import add, mul, sub
 HW_SOURCE_FILE = 'hw02.py'
 
-from operator import add, mul, sub
 
-square = lambda x: x * x
+def square(x): return x * x
 
-identity = lambda x: x
 
-triple = lambda x: 3 * x
+def identity(x): return x
 
-increment = lambda x: x + 1
+
+def triple(x): return 3 * x
+
+
+def increment(x): return x + 1
 
 ######################
 # Required Questions #
 ######################
 
 # Q1
+
+
 def make_adder(n):
     """Return a function that takes an argument K and returns N + K.
 
@@ -29,6 +34,8 @@ def make_adder(n):
     return lambda k: n + k
 
 # Q2
+
+
 def product(n, term):
     """Return the product of the first n terms in a sequence.
     n    -- a positive integer
@@ -58,6 +65,7 @@ def product(n, term):
         k += 1
     return total
 
+
 def factorial(n):
     """Return n factorial for n >= 0 by calling product.
 
@@ -73,6 +81,8 @@ def factorial(n):
     return product(n, lambda k: n - k + 1)
 
 # Q3
+
+
 def accumulate(combiner, base, n, term):
     """Return the result of combining the first n terms in a sequence and base.
     The terms to be combined are term(1), term(2), ..., term(n).  combiner is a
@@ -96,6 +106,7 @@ def accumulate(combiner, base, n, term):
         k += 1
     return total
 
+
 def summation_using_accumulate(n, term):
     """Returns the sum of term(1) + ... + term(n). The implementation
     uses accumulate.
@@ -111,6 +122,7 @@ def summation_using_accumulate(n, term):
     """
     "*** YOUR CODE HERE ***"
     return accumulate(add, 0, n, term)
+
 
 def product_using_accumulate(n, term):
     """An implementation of product using accumulate.
@@ -128,7 +140,6 @@ def product_using_accumulate(n, term):
     return accumulate(mul, 1, n, term)
 
 
-
 ###################
 # Extra Questions #
 ###################
@@ -139,6 +150,7 @@ def compose1(f, g):
     def h(x):
         return f(g(x))
     return h
+
 
 def make_repeater(f, n):
     """Return the function that computes the nth application of f.
@@ -157,7 +169,7 @@ def make_repeater(f, n):
     """
     "*** YOUR CODE HERE ***"
     "Recursive version"
-    def repeater_fn (k):
+    def repeater_fn(k):
         if n == 0:
             return k
         if n == 1:
@@ -182,23 +194,30 @@ def make_repeater(f, n):
     # TBD
 
 # Q5
+
+
 def zero(f):
     return lambda x: x
 
+
 def successor(n):
     return lambda f: lambda x: f(n(f)(x))
+
 
 def one(f):
     """Church numeral 1: same as successor(zero)"""
     "*** YOUR CODE HERE ***"
     return lambda x: f(x)
 
+
 def two(f):
     """Church numeral 2: same as successor(successor(zero))"""
     "*** YOUR CODE HERE ***"
     return lambda x: f(f(x))
 
+
 three = successor(two)
+
 
 def church_to_int(n):
     """Convert the Church numeral n to a Python integer.
@@ -213,17 +232,8 @@ def church_to_int(n):
     3
     """
     "*** YOUR CODE HERE ***"
-    # record how many time f was called
-    total = 0
-    def trace(fn):
-        def wrapped(x):
-            # print('-> ', fn, '(', x, ')')
-            nonlocal total
-            total += 1
-            return fn(x)
-        return wrapped
-    n(trace(lambda x: x))(1)
-    return total
+    return n(lambda x: x + 1)(0)
+
 
 def add_church(m, n):
     """Return the Church numeral for m + n, for Church numerals m and n.
@@ -232,6 +242,12 @@ def add_church(m, n):
     5
     """
     "*** YOUR CODE HERE ***"
+    apply_time = church_to_int(n)
+    k = 0
+    while k < apply_time:
+        m = successor(m)
+        k = k + 1
+    return m
 
 
 def mul_church(m, n):
@@ -244,6 +260,14 @@ def mul_church(m, n):
     12
     """
     "*** YOUR CODE HERE ***"
+    apply_time = church_to_int(n)
+    apply_num = m
+    k = 1
+    while k < apply_time:
+        m = add_church(m, apply_num)
+        k = k + 1
+    return m
+
 
 def pow_church(m, n):
     """Return the Church numeral m ** n, for Church numerals m and n.
@@ -254,3 +278,10 @@ def pow_church(m, n):
     9
     """
     "*** YOUR CODE HERE ***"
+    apply_time = church_to_int(n)
+    apply_num = m
+    k = 1
+    while k < apply_time:
+        m = mul_church(m, apply_num)
+        k = k + 1
+    return m
