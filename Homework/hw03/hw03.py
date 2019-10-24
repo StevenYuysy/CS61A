@@ -1,51 +1,31 @@
-from operator import add, mul, sub
 HW_SOURCE_FILE = 'hw03.py'
 
 #############
 # Questions #
 #############
 
+def num_sevens(n):
+    """Returns the number of times 7 appears as a digit of n.
 
-def square(x): return x * x
-
-
-def identity(x): return x
-
-
-def triple(x): return 3 * x
-
-
-def increment(x): return x + 1
-
-
-def has_seven(k):
-    """Returns True if at least one of the digits of k is a 7, False otherwise.
-
-    >>> has_seven(3)
-    False
-    >>> has_seven(7)
-    True
-    >>> has_seven(2734)
-    True
-    >>> has_seven(2634)
-    False
-    >>> has_seven(734)
-    True
-    >>> has_seven(7777)
-    True
+    >>> num_sevens(3)
+    0
+    >>> num_sevens(7)
+    1
+    >>> num_sevens(7777777)
+    7
+    >>> num_sevens(2637)
+    1
+    >>> num_sevens(76370)
+    2
+    >>> num_sevens(12345)
+    0
     >>> from construct_check import check
-    >>> check(HW_SOURCE_FILE, 'has_seven',
+    >>> # ban all assignment statements
+    >>> check(HW_SOURCE_FILE, 'num_sevens',
     ...       ['Assign', 'AugAssign'])
     True
     """
     "*** YOUR CODE HERE ***"
-    if k == 0:
-        return False
-    if k % 10 == 7:
-        return True
-    else:
-        return has_seven(k // 10)
-
 
 def pingpong(n):
     """Return the nth element of the ping-pong sequence.
@@ -75,92 +55,97 @@ def pingpong(n):
     >>> pingpong(100)
     2
     >>> from construct_check import check
+    >>> # ban assignment statements
     >>> check(HW_SOURCE_FILE, 'pingpong', ['Assign', 'AugAssign'])
     True
     """
     "*** YOUR CODE HERE ***"
-    # Iteration
-    # k = 1
-    # current_number = 1
-    # current_operator = add
-    # while k < n:
-    #     current_number = current_operator(current_number, 1)
-    #     k += 1
-    #     if has_seven(k) or k / 7 == k // 7:
-    #         current_operator = add if current_operator == sub else sub
-    #     # print(k, current_number, current_operator)
-    # return current_number
 
-    # Recursive
-    def get_current_value(k):
-        if k == 1:
-            return 1
-        elif has_seven(k) or k / 7 == k // 7:
-            return -1 * get_current_value(k - 1)
-        return get_current_value(k-1)
+def count_change(amount):
+    """Return the number of ways to make change for amount.
 
-    if n == 1:
-        return 1
-    return pingpong(n - 1) + get_current_value(n - 1)
-
-
-def accumulate(combiner, base, n, term):
-    """Return the result of combining the first n terms in a sequence and base.
-    The terms to be combined are term(1), term(2), ..., term(n).  combiner is a
-    two-argument, associative function.
-
-    >>> accumulate(add, 0, 5, identity)  # 0 + 1 + 2 + 3 + 4 + 5
-    15
-    >>> accumulate(add, 11, 5, identity) # 11 + 1 + 2 + 3 + 4 + 5
-    26
-    >>> accumulate(add, 11, 0, identity) # 11
-    11
-    >>> accumulate(add, 11, 3, square)   # 11 + 1^2 + 2^2 + 3^2
-    25
-    >>> accumulate(mul, 2, 3, square)    # 2 * 1^2 * 2^2 * 3^2
-    72
-    """
-    total, k = base, 1
-    while k <= n:
-        total, k = combiner(total, term(k)), k + 1
-    return total
-
-
-def filtered_accumulate(combiner, base, pred, n, term):
-    """Return the result of combining the terms in a sequence of N terms
-    that satisfy the predicate pred. combiner is a two-argument function.
-    If v1, v2, ..., vk are the values in term(1), term(2), ..., term(N)
-    that satisfy pred, then the result is
-         base combiner v1 combiner v2 ... combiner vk
-    (treating combiner as if it were a binary operator, like +). The
-    implementation uses accumulate.
-
-    >>> filtered_accumulate(add, 0, lambda x: True, 5, identity)  # 0 + 1 + 2 + 3 + 4 + 5
-    15
-    >>> filtered_accumulate(add, 11, lambda x: False, 5, identity) # 11
-    11
-    >>> filtered_accumulate(add, 0, odd, 5, identity)   # 0 + 1 + 3 + 5
-    9
-    >>> filtered_accumulate(mul, 1, greater_than_5, 5, square)  # 1 * 9 * 16 * 25
-    3600
-    >>> # Do not use while/for loops or recursion
+    >>> count_change(7)
+    6
+    >>> count_change(10)
+    14
+    >>> count_change(20)
+    60
+    >>> count_change(100)
+    9828
     >>> from construct_check import check
-    >>> check(HW_SOURCE_FILE, 'filtered_accumulate',
-    ...       ['While', 'For', 'Recursion'])
+    >>> # ban iteration
+    >>> check(HW_SOURCE_FILE, 'count_change', ['While', 'For'])
     True
     """
-    def combine_if(x, y):
-        "*** YOUR CODE HERE ***"
-        if pred(y):
-            return combiner(x, y)
-        else:
-            return x
-    return accumulate(combine_if, base, n, term)
+    "*** YOUR CODE HERE ***"
 
 
-def odd(x):
-    return x % 2 == 1
+def flatten(lst):
+    """Returns a flattened version of lst.
 
+    >>> flatten([1, 2, 3])     # normal list
+    [1, 2, 3]
+    >>> x = [1, [2, 3], 4]      # deep list
+    >>> flatten(x)
+    [1, 2, 3, 4]
+    >>> x # Ensure x is not mutated
+    [1, [2, 3], 4]
+    >>> x = [[1, [1, 1]], 1, [1, 1]] # deep list
+    >>> flatten(x)
+    [1, 1, 1, 1, 1, 1]
+    >>> x
+    [[1, [1, 1]], 1, [1, 1]]
+    """
+    "*** YOUR CODE HERE ***"
 
-def greater_than_5(x):
-    return x > 5
+###################
+# Extra Questions #
+###################
+
+def print_move(origin, destination):
+    """Print instructions to move a disk."""
+    print("Move the top disk from rod", origin, "to rod", destination)
+
+def move_stack(n, start, end):
+    """Print the moves required to move n disks on the start pole to the end
+    pole without violating the rules of Towers of Hanoi.
+
+    n -- number of disks
+    start -- a pole position, either 1, 2, or 3
+    end -- a pole position, either 1, 2, or 3
+
+    There are exactly three poles, and start and end must be different. Assume
+    that the start pole has at least n disks of increasing size, and the end
+    pole is either empty or has a top disk larger than the top n start disks.
+
+    >>> move_stack(1, 1, 3)
+    Move the top disk from rod 1 to rod 3
+    >>> move_stack(2, 1, 3)
+    Move the top disk from rod 1 to rod 2
+    Move the top disk from rod 1 to rod 3
+    Move the top disk from rod 2 to rod 3
+    >>> move_stack(3, 1, 3)
+    Move the top disk from rod 1 to rod 3
+    Move the top disk from rod 1 to rod 2
+    Move the top disk from rod 3 to rod 2
+    Move the top disk from rod 1 to rod 3
+    Move the top disk from rod 2 to rod 1
+    Move the top disk from rod 2 to rod 3
+    Move the top disk from rod 1 to rod 3
+    """
+    assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
+    "*** YOUR CODE HERE ***"
+
+from operator import sub, mul
+
+def make_anonymous_factorial():
+    """Return the value of an expression that computes factorial.
+
+    >>> make_anonymous_factorial()(5)
+    120
+    >>> from construct_check import check
+    >>> # ban any assignments or recursion
+    >>> check(HW_SOURCE_FILE, 'make_anonymous_factorial', ['Assign', 'AugAssign', 'FunctionDef', 'Recursion'])
+    True
+    """
+    return 'YOUR_EXPRESSION_HERE'
