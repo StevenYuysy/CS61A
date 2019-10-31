@@ -128,6 +128,20 @@ def flatten(lst):
     [[1, [1, 1]], 1, [1, 1]]
     """
     "*** YOUR CODE HERE ***"
+    result = []
+
+    def f(lst):
+        k = 0
+        while k < len(lst):
+            if type(lst[k]) == list:
+                f(lst[k])
+            else:
+                result.append(lst[k])
+            k += 1
+        return
+    f(lst)
+    return result
+
 
 ###################
 # Extra Questions #
