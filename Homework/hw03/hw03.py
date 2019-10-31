@@ -1,8 +1,10 @@
+from operator import sub, mul
 HW_SOURCE_FILE = 'hw03.py'
 
 #############
 # Questions #
 #############
+
 
 def num_sevens(n):
     """Returns the number of times 7 appears as a digit of n.
@@ -26,6 +28,10 @@ def num_sevens(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n == 0:
+        return 0
+    return (1 if n % 10 == 7 else 0) + num_sevens(n // 10)
+
 
 def pingpong(n):
     """Return the nth element of the ping-pong sequence.
@@ -61,6 +67,18 @@ def pingpong(n):
     """
     "*** YOUR CODE HERE ***"
 
+    def add_num(k):
+        if k == 1:
+            return 1
+        if k % 7 == 0 or num_sevens(k):
+            return 1 if add_num(k-1) == -1 else -1
+        return add_num(k-1)
+
+    if n == 1:
+        return 1
+    return pingpong(n-1) + add_num(n-1)
+
+
 def count_change(amount):
     """Return the number of ways to make change for amount.
 
@@ -78,6 +96,19 @@ def count_change(amount):
     True
     """
     "*** YOUR CODE HERE ***"
+    def f(n, k):
+        if 2 * k >= n:
+            return k
+        return f(n, k * 2)
+
+    def change(n, m):
+        if n < 0:
+            return 0
+        elif m == 1:
+            return 1
+        return change(n, f(m-1, 1)) + change(n-m, m)
+
+    return change(amount, f(amount, 1))
 
 
 def flatten(lst):
@@ -102,9 +133,11 @@ def flatten(lst):
 # Extra Questions #
 ###################
 
+
 def print_move(origin, destination):
     """Print instructions to move a disk."""
     print("Move the top disk from rod", origin, "to rod", destination)
+
 
 def move_stack(n, start, end):
     """Print the moves required to move n disks on the start pole to the end
@@ -136,7 +169,6 @@ def move_stack(n, start, end):
     assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
     "*** YOUR CODE HERE ***"
 
-from operator import sub, mul
 
 def make_anonymous_factorial():
     """Return the value of an expression that computes factorial.
