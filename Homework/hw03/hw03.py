@@ -203,4 +203,4 @@ def make_anonymous_factorial():
     True
     """
     # return 'YOUR_EXPRESSION_HERE'
-    return lambda n: 1 if n == 1 else mul(n, sub(n, 1))
+    return (lambda x: lambda y: x(x, y))(lambda fact, n: 1 if n == 1 else mul(n, fact(fact, sub(n, 1))))
