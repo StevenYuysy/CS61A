@@ -3,6 +3,7 @@
 
 this_file = __file__
 
+
 def skip_add(n):
     """ Takes a number n and returns n + n-2 + n-4 + n-6 + ... + 0.
 
@@ -18,9 +19,12 @@ def skip_add(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n <= 0:
+        return 0
+    return n + skip_add(n - 2)
+
 
 def summation(n, term):
-
     """Return the sum of the first n terms in the sequence defined by term.
     Implement using recursion!
 
@@ -39,6 +43,10 @@ def summation(n, term):
     """
     assert n >= 1
     "*** YOUR CODE HERE ***"
+    if n == 1:
+        return term(1)
+    return term(n) + summation(n-1, term)
+
 
 def gcd(a, b):
     """Returns the greatest common divisor of a and b.
@@ -54,6 +62,10 @@ def gcd(a, b):
     40
     """
     "*** YOUR CODE HERE ***"
+    if a % b == 0:
+        return b
+    return gcd(min(a, b), max(a, b) % min(a, b))
+
 
 def couple(s1, s2):
     """Return a list that contains lists with i-th elements of two sequences
@@ -69,6 +81,8 @@ def couple(s1, s2):
     """
     assert len(s1) == len(s2)
     "*** YOUR CODE HERE ***"
+    return [[s1[index], s2[index]] for index in range(len(s1))]
+
 
 def enumerate(s, start=0):
     """Returns a list of lists, where the i-th list contains i+start and
@@ -79,8 +93,9 @@ def enumerate(s, start=0):
     [[5, 'f'], [6, 'i'], [7, 'v'], [8, 'e']]
     """
     "*** YOUR CODE HERE ***"
-
+    return couple(range(start, start + len(s)), s)
 # Optional problems
+
 
 def squares(s):
     """Returns a new list containing square roots of the elements of the
@@ -95,6 +110,7 @@ def squares(s):
     """
     "*** YOUR CODE HERE ***"
 
+
 def key_of_min_value(d):
     """Returns the key in a dict d that corresponds to the minimum value of d.
     >>> letters = {'a': 6, 'b': 5, 'c': 4, 'd': 5}
@@ -104,6 +120,7 @@ def key_of_min_value(d):
     'c'
     """
     "*** YOUR CODE HERE ***"
+
 
 def ten_pairs(n):
     """Return the number of ten-pairs within positive integer n.
@@ -116,3 +133,11 @@ def ten_pairs(n):
     6
     """
     "*** YOUR CODE HERE ***"
+    def find_ten_pairs(digit, numbers):
+        find_result = 1 if digit + numbers % 10 == 10 else 0
+        if numbers // 10 == 0:
+            return find_result
+        return find_result + find_ten_pairs(digit, numbers // 10)
+    if n // 10 == 0:
+        return 0
+    return find_ten_pairs(n % 10, n // 10) + ten_pairs(n // 10)
