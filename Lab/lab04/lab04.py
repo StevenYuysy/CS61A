@@ -109,6 +109,13 @@ def squares(s):
     []
     """
     "*** YOUR CODE HERE ***"
+    def sqrt(n, k):
+        if k == 0:
+            return 0
+        elif k * k == n:
+            return k
+        return sqrt(n, k-1)
+    return [sqrt(x, x) for x in s if sqrt(x, x)]
 
 
 def key_of_min_value(d):
@@ -120,6 +127,7 @@ def key_of_min_value(d):
     'c'
     """
     "*** YOUR CODE HERE ***"
+    return min(d, key=lambda x: d[x])
 
 
 def ten_pairs(n):
