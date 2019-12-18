@@ -18,6 +18,8 @@ def choose(paragraphs, select, k):
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
     # END PROBLEM 1
+    select_paragraphs = [p for p in paragraphs if select(p)]
+    return select_paragraphs[k] if k < len(select_paragraphs) else ''
 
 
 def about(topic):
@@ -34,6 +36,18 @@ def about(topic):
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
     # END PROBLEM 2
+    def select(pargraph):
+        result = False
+        index = 0
+        pargraph_list = split(remove_punctuation(lower(pargraph)))
+        while index < len(topic):
+            p = topic[index]
+            if p in pargraph_list:
+                result = True
+                break
+            index = index + 1
+        return result
+    return select
 
 
 def accuracy(typed, reference):
@@ -57,6 +71,20 @@ def accuracy(typed, reference):
     reference_words = split(reference)
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    typed_list = split(typed)
+    reference_list = split(reference)
+    if len(typed_list) == 0 or len(reference_list) == 0:
+        return 0.0
+    index = 0
+    match_times = 0
+    while index < len(reference_list):
+        if index >= len(typed_list):
+            break
+        if typed_list[index] == reference_list[index]:
+            match_times = match_times + 1
+        index = index + 1
+    return match_times / len(typed_list) * 100
+
     # END PROBLEM 3
 
 
@@ -65,6 +93,7 @@ def wpm(typed, elapsed):
     assert elapsed > 0, 'Elapsed time must be positive'
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    return len(typed) / 5 / elapsed * 60
     # END PROBLEM 4
 
 
@@ -87,24 +116,25 @@ def swap_diff(start, goal, limit):
     assert False, 'Remove this line'
     # END PROBLEM 6
 
+
 def edit_diff(start, goal, limit):
     """A diff function that computes the edit distance from START to GOAL."""
     assert False, 'Remove this line'
 
-    if ______________: # Fill in the condition
+    if ______________:  # Fill in the condition
         # BEGIN
         "*** YOUR CODE HERE ***"
         # END
 
-    elif ___________: # Feel free to remove or add additional cases
+    elif ___________:  # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
         # END
 
     else:
         add_diff = ...  # Fill in these lines
-        remove_diff = ... 
-        substitute_diff = ... 
+        remove_diff = ...
+        substitute_diff = ...
         # BEGIN
         "*** YOUR CODE HERE ***"
         # END
@@ -113,8 +143,6 @@ def edit_diff(start, goal, limit):
 def final_diff(start, goal, limit):
     """A diff function. If you implement this function, it will be used."""
     assert False, 'Remove this line to use your final_diff function'
-
-
 
 
 ###########
@@ -176,7 +204,7 @@ enable_multiplayer = False  # Change to True when you
 def run_typing_test(topics):
     """Measure typing speed and accuracy on the command line."""
     paragraphs = lines_from_file('data/sample_paragraphs.txt')
-    select = lambda p: True
+    def select(p): return True
     if topics:
         select = about(topics)
     i = 0
