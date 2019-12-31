@@ -1,16 +1,21 @@
 this_file = __file__
 
+
 def intersection(st, ave):
     """Represent an intersection using the Cantor pairing function."""
     return (st+ave)*(st+ave+1)//2 + ave
 
+
 def street(inter):
     return w(inter) - avenue(inter)
+
 
 def avenue(inter):
     return inter - (w(inter) ** 2 + w(inter)) // 2
 
-w = lambda z: int(((8*z+1)**0.5-1)/2)
+
+def w(z): return int(((8*z+1)**0.5-1)/2)
+
 
 def taxicab(a, b):
     """Return the taxicab distance between two intersections.
@@ -23,8 +28,12 @@ def taxicab(a, b):
     9
     """
     "*** YOUR CODE HERE ***"
+    s_a, s_b = street(a), street(b)
+    a_a, a_b = avenue(a), avenue(b)
+    return abs(s_a-s_b) + abs(a_a-a_b)
 
 # Mobiles
+
 
 def mobile(left, right):
     """Construct a mobile from a left side and a right side."""
@@ -32,52 +41,65 @@ def mobile(left, right):
     assert is_side(right), "right must be a side"
     return ['mobile', left, right]
 
+
 def is_mobile(m):
     """Return whether m is a mobile."""
     return type(m) == list and len(m) == 3 and m[0] == 'mobile'
+
 
 def left(m):
     """Select the left side of a mobile."""
     assert is_mobile(m), "must call left on a mobile"
     return m[1]
 
+
 def right(m):
     """Select the right side of a mobile."""
     assert is_mobile(m), "must call right on a mobile"
     return m[2]
+
 
 def side(length, mobile_or_weight):
     """Construct a side: a length of rod with a mobile or weight at the end."""
     assert is_mobile(mobile_or_weight) or is_weight(mobile_or_weight)
     return ['side', length, mobile_or_weight]
 
+
 def is_side(s):
     """Return whether s is a side."""
     return type(s) == list and len(s) == 3 and s[0] == 'side'
+
 
 def length(s):
     """Select the length of a side."""
     assert is_side(s), "must call length on a side"
     return s[1]
 
+
 def end(s):
     """Select the mobile or weight hanging at the end of a side."""
     assert is_side(s), "must call end on a side"
     return s[2]
 
+
 def weight(size):
     """Construct a weight of some size."""
     assert size > 0
     "*** YOUR CODE HERE ***"
+    return ['weight', size]
+
 
 def size(w):
     """Select the size of a weight."""
     assert is_weight(w), 'must call size on a weight'
     "*** YOUR CODE HERE ***"
+    return w[1]
+
 
 def is_weight(w):
     """Whether w is a weight."""
     return type(w) == list and len(w) == 2 and w[0] == 'weight'
+
 
 def examples():
     t = mobile(side(1, weight(2)),
@@ -87,6 +109,7 @@ def examples():
                               side(3, weight(2)))))
     v = mobile(side(4, t), side(2, u))
     return (t, u, v)
+
 
 def total_weight(m):
     """Return the total weight of m, a weight or mobile.
@@ -105,6 +128,7 @@ def total_weight(m):
         assert is_mobile(m), "must get total weight of a mobile or a weight"
         return total_weight(end(left(m))) + total_weight(end(right(m)))
 
+
 def balanced(m):
     """Return whether m is balanced.
 
@@ -122,6 +146,26 @@ def balanced(m):
     False
     """
     "*** YOUR CODE HERE ***"
+    end_left_m = end(left(m))
+    end_right_m = end(right(m))
+
+    if is_weight(end_left_m) and is_weight(end_right_m):
+        return size(end_left_m) * length(left(m)) == size(end_right_m) * length(right(m))
+    elif is_weight(end_left_m):
+        if not balanced(end_right_m):
+            return False
+        return size(end_left_m) * length(left(m)) == total_weight(end_right_m) * length(right(m))
+    elif is_weight(end_right_m):
+        if not balanced(end_left_m):
+            return False
+        return total_weight(end_left_m) * length(left(m)) == size(end_right_m) * length(right(m))
+    else:
+        if not balanced(end_left_m):
+            return False
+        if not balanced(end_right_m):
+            return False
+        return total_weight(end_left_m) * length(left(m)) == total_weight(end_right_m) * length(right(m))
+
 
 def totals_tree(m):
     """Return a tree representing the mobile with its total weight at the root.
@@ -149,6 +193,7 @@ def totals_tree(m):
           2
     """
     "*** YOUR CODE HERE ***"
+
 
 def replace_leaf(t, old, new):
     """Returns a new tree where every leaf value equal to old has
@@ -181,6 +226,7 @@ def replace_leaf(t, old, new):
     """
     "*** YOUR CODE HERE ***"
 
+
 def make_fib():
     """Returns a function that returns the next Fibonacci number
     every time it is called.
@@ -205,6 +251,7 @@ def make_fib():
     True
     """
     "*** YOUR CODE HERE ***"
+
 
 def make_withdraw(balance, password):
     """Return a password-protected withdraw function.
@@ -235,6 +282,7 @@ def make_withdraw(balance, password):
     True
     """
     "*** YOUR CODE HERE ***"
+
 
 def make_joint(withdraw, old_password, new_password):
     """Return a password-protected withdraw function that has joint access to
@@ -277,7 +325,6 @@ def make_joint(withdraw, old_password, new_password):
     "*** YOUR CODE HERE ***"
 
 
-
 ## Tree Methods ##
 
 def tree(label, branches=[]):
@@ -286,13 +333,16 @@ def tree(label, branches=[]):
         assert is_tree(branch), 'branches must be trees'
     return [label] + list(branches)
 
+
 def label(tree):
     """Return the label value of a tree."""
     return tree[0]
 
+
 def branches(tree):
     """Return the list of branches of the given tree."""
     return tree[1:]
+
 
 def is_tree(tree):
     """Returns True if the given tree is a tree, and False otherwise."""
@@ -303,11 +353,13 @@ def is_tree(tree):
             return False
     return True
 
+
 def is_leaf(tree):
     """Returns True if the given tree's list of branches is empty, and False
     otherwise.
     """
     return not branches(tree)
+
 
 def print_tree(t, indent=0):
     """Print a representation of this tree in which each node is
@@ -332,6 +384,7 @@ def print_tree(t, indent=0):
     for b in branches(t):
         print_tree(b, indent + 1)
 
+
 def copy_tree(t):
     """Returns a copy of t. Only for testing purposes.
 
@@ -347,22 +400,27 @@ def copy_tree(t):
 # Extra Questions #
 ###################
 
+
 def interval(a, b):
     """Construct an interval from a to b."""
     return [a, b]
+
 
 def lower_bound(x):
     """Return the lower bound of interval x."""
     "*** YOUR CODE HERE ***"
 
+
 def upper_bound(x):
     """Return the upper bound of interval x."""
     "*** YOUR CODE HERE ***"
+
 
 def str_interval(x):
     """Return a string representation of interval x.
     """
     return '{0} to {1}'.format(lower_bound(x), upper_bound(x))
+
 
 def add_interval(x, y):
     """Return an interval that contains the sum of any value in interval x and
@@ -370,6 +428,7 @@ def add_interval(x, y):
     lower = lower_bound(x) + lower_bound(y)
     upper = upper_bound(x) + upper_bound(y)
     return interval(lower, upper)
+
 
 def mul_interval(x, y):
     """Return the interval that contains the product of any value in x and any
@@ -380,10 +439,12 @@ def mul_interval(x, y):
     p4 = x[1] * y[1]
     return [min(p1, p2, p3, p4), max(p1, p2, p3, p4)]
 
+
 def sub_interval(x, y):
     """Return the interval that contains the difference between any value in x
     and any value in y."""
     "*** YOUR CODE HERE ***"
+
 
 def div_interval(x, y):
     """Return the interval that contains the quotient of any value in x divided by
@@ -393,8 +454,10 @@ def div_interval(x, y):
     reciprocal_y = interval(1/upper_bound(y), 1/lower_bound(y))
     return mul_interval(x, reciprocal_y)
 
+
 def par1(r1, r2):
     return div_interval(mul_interval(r1, r2), add_interval(r1, r2))
+
 
 def par2(r1, r2):
     one = interval(1, 1)
@@ -402,8 +465,10 @@ def par2(r1, r2):
     rep_r2 = div_interval(one, r2)
     return div_interval(one, add_interval(rep_r1, rep_r2))
 
+
 def multiple_references_explanation():
     return """The multiple reference problem..."""
+
 
 def quadratic(x, a, b, c):
     """Return the interval that is the range of the quadratic defined by
