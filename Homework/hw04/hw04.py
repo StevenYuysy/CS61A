@@ -193,6 +193,9 @@ def totals_tree(m):
           2
     """
     "*** YOUR CODE HERE ***"
+    if is_weight(m):
+        return tree(size(m))
+    return tree(total_weight(m), [totals_tree(end(left(m))), totals_tree(end(right(m)))])
 
 
 def replace_leaf(t, old, new):
@@ -225,6 +228,10 @@ def replace_leaf(t, old, new):
     True
     """
     "*** YOUR CODE HERE ***"
+    new_leaf_label = new if label(t) is old else label(t)
+    if is_leaf(t):
+        return tree(new_leaf_label)
+    return tree(label(t), [replace_leaf(b, old, new) for b in branches(t)])
 
 
 def make_fib():
@@ -251,6 +258,14 @@ def make_fib():
     True
     """
     "*** YOUR CODE HERE ***"
+    first, second = 1, 0
+
+    def fib():
+        nonlocal first, second
+        result = second
+        first, second = second, first + second
+        return result
+    return fib
 
 
 def make_withdraw(balance, password):
